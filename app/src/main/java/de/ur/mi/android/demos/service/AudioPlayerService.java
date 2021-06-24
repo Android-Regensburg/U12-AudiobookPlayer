@@ -54,15 +54,11 @@ public class AudioPlayerService extends Service {
         try {
             mediaPlayer.setDataSource(audioBook.getAudioURLString());
             mediaPlayer.prepareAsync();
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    handleIsPrepared(mp);
-                }
-            });
+            mediaPlayer.setOnPreparedListener(this::handleIsPrepared);
+            mediaPlayer.setOnCompletionListener(mp -> listener.onPlaybackEnded());
         } catch (IOException e) {
-            e.printStackTrace();
             listener.onPlaybackError();
+            e.printStackTrace();
         }
     }
 
@@ -75,29 +71,13 @@ public class AudioPlayerService extends Service {
         listener.onPlaybackReady(mp.getDuration());
     }
 
-    public class AudioPlayerBinder extends Binder {
-        public AudioPlayerService getService() {
-            return AudioPlayerService.this;
-        }
-    }
-
     public void playAudio() {
         Log.d("myaudioplayservice", "Now Playing");
         if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
             mediaPlayer.start();
             listener.onPlaybackStarted();
-            scheduledFuture = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    listener.onRemainingTimeUpdated(mediaPlayer.getCurrentPosition());
-                }
-            }, 1000, 1000, TimeUnit.MILLISECONDS);
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    listener.onPlaybackEnded();
-                }
-            });
+            scheduledFuture = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->
+                    listener.onRemainingTimeUpdated(mediaPlayer.getCurrentPosition()), 0, 1000, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -109,15 +89,17 @@ public class AudioPlayerService extends Service {
         }
     }
 
-    public void setAudioTimer(int milliseconds) {
+    public void seekAudio(int milliseconds) {
         pauseAudio();
         mediaPlayer.seekTo(milliseconds);
-        mediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
-            @Override
-            public void onSeekComplete(MediaPlayer mp) {
-                playAudio();
-            }
-        });
+        mediaPlayer.setOnSeekCompleteListener(mp -> playAudio());
+    }
+
+
+    public class AudioPlayerBinder extends Binder {
+        public AudioPlayerService getService() {
+            return AudioPlayerService.this;
+        }
     }
 
     public interface PlaybackListener {

@@ -7,10 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
-import android.widget.SeekBar;
-
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -56,12 +52,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAdapter() {
-        adapter = new AudioBookAdapter(this, new AudioBookAdapter.OnAudioBookAdapterItemClickedListener() {
-            @Override
-            public void onItemClicked(AudioBook audioBook) {
-                startPlayerActivity(audioBook);
-            }
-        });
+        adapter = new AudioBookAdapter(this, this::startPlayerActivity);
         recyclerAudioList.setAdapter(adapter);
         adapter.updateData(sampleData);
     }

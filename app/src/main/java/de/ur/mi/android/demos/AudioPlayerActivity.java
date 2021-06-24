@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -25,14 +24,21 @@ import de.ur.mi.android.demos.utils.TimeFormatter;
 
 public class AudioPlayerActivity extends AppCompatActivity implements AudioPlayerService.PlaybackListener {
 
-    private AudioBook currentAudioBook;
     private AudioPlayerService audioPlayerService;
+    private AudioBook currentAudioBook;
     private boolean isBound = false;
-
-    private ImageButton btnPlay;
     private boolean isPlaying = false;
+
+    private ImageButton btnPlay,
+            btnPrevious,
+            btnNext;
+
+    private ImageView imgWallpaper;
     private SeekBar seekBar;
-    private TextView txtCurrentTime;
+    private TextView txtTitle,
+            txtDescription,
+            txtCurrentTime,
+            txtTotalDuration;
 
     private final ServiceConnection connection = new ServiceConnection() {
         @Override
@@ -48,13 +54,13 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
             isBound = false;
         }
     };
-    private TextView txtTotalDuration;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fetchExtras();
         initUI();
+        setEventListeners();
+        setAudioBook((AudioBook) getIntent().getSerializableExtra(MainActivity.AUDIOBOOK_EXTRA_KEY));
     }
 
     @Override
@@ -70,35 +76,40 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
         isBound = false;
     }
 
-    private void fetchExtras() {
-        Intent intent = getIntent();
-        currentAudioBook = (AudioBook) intent.getSerializableExtra(MainActivity.AUDIOBOOK_EXTRA_KEY);
-    }
-
     private void initUI() {
         setContentView(R.layout.activity_player);
-        TextView txtTitle = findViewById(R.id.txt_title);
-        TextView txtDescription = findViewById(R.id.txt_description);
+        txtTitle = findViewById(R.id.txt_title);
+        txtDescription = findViewById(R.id.txt_description);
         txtTotalDuration = findViewById(R.id.txt_total_duration);
         txtCurrentTime = findViewById(R.id.txt_current_time);
-        txtTitle.setText(currentAudioBook.getTitle());
-        txtDescription.setText(currentAudioBook.getDescription());
-        txtCurrentTime.setText(TimeFormatter.formatSecondsToDurationString(0));
-
-
-        ImageView imageView = findViewById(R.id.img_wallpaper);
-        Glide.with(this)
-                .load(currentAudioBook.getWallpaperURLString())
-                .centerCrop()
-                .into(imageView);
+        imgWallpaper = findViewById(R.id.img_wallpaper);
+        btnPlay = findViewById(R.id.btn_play);
+        btnPrevious = findViewById(R.id.btn_previous);
+        btnNext = findViewById(R.id.btn_next);
         seekBar = findViewById(R.id.seekbar_progess);
         seekBar.setPadding(0, 0, 0, 0);
-        seekBar.setMax(currentAudioBook.getDuration());
+    }
+
+    private void setEventListeners() {
+        btnPlay.setOnClickListener(v -> {
+            if (isPlaying) {
+                stopAudio();
+            } else {
+                playAudio();
+            }
+        });
+        btnPrevious.setOnClickListener(v -> {
+            // TODO: Switch to Previous AudioBook
+        });
+        btnNext.setOnClickListener(v -> {
+            // TODO: Switch to Next Audiobook
+        });
+
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                    audioPlayerService.setAudioTimer(progress * 1000);
+                    audioPlayerService.seekAudio(progress * 1000);
                     seekBar.setProgress(progress);
                 }
             }
@@ -113,18 +124,20 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
 
             }
         });
+    }
 
-        btnPlay = findViewById(R.id.btn_play);
-        btnPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isPlaying) {
-                    stopAudio();
-                } else {
-                    playAudio();
-                }
-            }
-        });
+    private void setAudioBook(AudioBook audioBook) {
+        currentAudioBook = audioBook;
+        txtTitle.setText(audioBook.getTitle());
+        txtDescription.setText(audioBook.getDescription());
+        txtCurrentTime.setText(TimeFormatter.formatSecondsToDurationString(0));
+
+        Glide.with(this)
+                .load(audioBook.getWallpaperURLString())
+                .centerCrop()
+                .into(imgWallpaper);
+
+        seekBar.setMax(audioBook.getDuration());
     }
 
     private void playAudio() {
@@ -147,8 +160,9 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
 
     @Override
     public void onPlaybackReady(int milliseconds) {
-        txtTotalDuration.setText(TimeFormatter.formatSecondsToDurationString(milliseconds / 1000));
-        seekBar.setMax(milliseconds / 1000);
+        int durationInSeconds = milliseconds / 1000;
+        txtTotalDuration.setText(TimeFormatter.formatSecondsToDurationString(durationInSeconds));
+        seekBar.setMax(durationInSeconds);
     }
 
     @Override
@@ -165,8 +179,9 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
 
     @Override
     public void onRemainingTimeUpdated(int milliseconds) {
-        seekBar.setProgress(milliseconds / 1000);
-        txtCurrentTime.setText(TimeFormatter.formatSecondsToDurationString(milliseconds / 1000));
+        int durationInSeconds = milliseconds / 1000;
+        seekBar.setProgress(durationInSeconds);
+        txtCurrentTime.setText(TimeFormatter.formatSecondsToDurationString(durationInSeconds));
     }
 
     @Override

@@ -4,12 +4,12 @@ import java.io.Serializable;
 
 public class AudioBook implements Serializable {
 
-    private final String title;
-    private final String description;
-    private final String author;
+    private final String title,
+            description,
+            author,
+            wallpaperURLString,
+            audioURLString;
     private final int duration;
-    private final String wallpaperURLString;
-    private final String audioURLString;
 
     public AudioBook(String title,
                      String description, String author, int duration, String wallpaperURLString, String audioURLString) {
