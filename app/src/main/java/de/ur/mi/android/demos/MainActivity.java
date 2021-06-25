@@ -12,28 +12,32 @@ import java.util.ArrayList;
 
 import de.ur.mi.android.demos.adapter.AudioBookAdapter;
 import de.ur.mi.android.demos.audio.AudioBook;
+import de.ur.mi.android.demos.audio.AudioBookManager;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String AUDIOBOOK_EXTRA_KEY = "audiobook";
 
+    private AudioBookManager manager;
     private AudioBookAdapter adapter;
     private RecyclerView recyclerAudioList;
-
-    private ArrayList<AudioBook> sampleData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initManager();
         initSampleData();
         initUI();
         initAdapter();
     }
 
+    private void initManager() {
+        manager = AudioBookManager.getInstance();
+    }
+
     private void initSampleData() {
-        sampleData = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            sampleData.add(new AudioBook(
+            manager.addAudioBook(new AudioBook(
                     "Game of Thrones",
                     "A Song of Ice and Fire",
                     "George R.R. Martin",
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private void initAdapter() {
         adapter = new AudioBookAdapter(this, this::startPlayerActivity);
         recyclerAudioList.setAdapter(adapter);
-        adapter.updateData(sampleData);
+        adapter.updateData(manager.getCurrentAudioBooks());
     }
 
     private void startPlayerActivity(AudioBook audioBook) {

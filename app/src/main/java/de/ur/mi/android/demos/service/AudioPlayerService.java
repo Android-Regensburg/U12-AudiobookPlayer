@@ -37,12 +37,11 @@ public class AudioPlayerService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        prepareMediaPlayer(intent);
+        prepareMediaPlayer((AudioBook) intent.getSerializableExtra(AUDIOBOOK_KEY));
         return binder;
     }
 
-    private void prepareMediaPlayer(Intent intent) {
-        AudioBook audioBook = (AudioBook) intent.getSerializableExtra(AUDIOBOOK_KEY);
+    private void prepareMediaPlayer(AudioBook audioBook) {
         if (audioBook == null) return;
         MediaPlayer mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioAttributes(
@@ -93,6 +92,15 @@ public class AudioPlayerService extends Service {
         pauseAudio();
         mediaPlayer.seekTo(milliseconds);
         mediaPlayer.setOnSeekCompleteListener(mp -> playAudio());
+    }
+
+    public void changeTitle(AudioBook audioBook) {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        prepareMediaPlayer(audioBook);
     }
 
 

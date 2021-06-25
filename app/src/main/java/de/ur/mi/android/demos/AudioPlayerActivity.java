@@ -19,6 +19,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.bumptech.glide.Glide;
 
 import de.ur.mi.android.demos.audio.AudioBook;
+import de.ur.mi.android.demos.audio.AudioBookManager;
 import de.ur.mi.android.demos.service.AudioPlayerService;
 import de.ur.mi.android.demos.utils.TimeFormatter;
 
@@ -26,6 +27,7 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
 
     private AudioPlayerService audioPlayerService;
     private AudioBook currentAudioBook;
+    private AudioBookManager manager;
     private boolean isBound = false;
     private boolean isPlaying = false;
 
@@ -58,15 +60,26 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initManager();
         initUI();
         setEventListeners();
         setAudioBook((AudioBook) getIntent().getSerializableExtra(MainActivity.AUDIOBOOK_EXTRA_KEY));
+    }
+
+    private void initManager() {
+        manager = AudioBookManager.getInstance();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         initService();
+    }
+
+    private void initService() {
+        Intent intent = new Intent(this, AudioPlayerService.class);
+        intent.putExtra(AudioPlayerService.AUDIOBOOK_KEY, currentAudioBook);
+        bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -100,9 +113,11 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
         });
         btnPrevious.setOnClickListener(v -> {
             // TODO: Switch to Previous AudioBook
+            setAudioBook(manager.getNext(currentAudioBook));
         });
         btnNext.setOnClickListener(v -> {
             // TODO: Switch to Next Audiobook
+            setAudioBook(manager.getPrevious(currentAudioBook));
         });
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -127,6 +142,7 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
     }
 
     private void setAudioBook(AudioBook audioBook) {
+        if (audioBook == null) return;
         currentAudioBook = audioBook;
         txtTitle.setText(audioBook.getTitle());
         txtDescription.setText(audioBook.getDescription());
@@ -150,12 +166,6 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
         if (isBound) {
             audioPlayerService.pauseAudio();
         }
-    }
-
-    private void initService() {
-        Intent intent = new Intent(this, AudioPlayerService.class);
-        intent.putExtra(AudioPlayerService.AUDIOBOOK_KEY, currentAudioBook);
-        bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
