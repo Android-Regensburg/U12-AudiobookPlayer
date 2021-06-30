@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 public class AudioBook implements Serializable {
 
+    private static int counter = 0;
+
+    private final int id;
     private final String title,
             description,
             author,
@@ -13,6 +16,7 @@ public class AudioBook implements Serializable {
 
     public AudioBook(String title,
                      String description, String author, int duration, String wallpaperURLString, String audioURLString) {
+        this.id = counter++;
         this.title = title;
         this.description = description;
         this.author = author;
@@ -20,6 +24,10 @@ public class AudioBook implements Serializable {
         this.wallpaperURLString =
                 wallpaperURLString;
         this.audioURLString = audioURLString;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {

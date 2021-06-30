@@ -89,6 +89,7 @@ public class AudioPlayerService extends Service {
     }
 
     public void seekAudio(int milliseconds) {
+        if (mediaPlayer == null) return;
         pauseAudio();
         mediaPlayer.seekTo(milliseconds);
         mediaPlayer.setOnSeekCompleteListener(mp -> playAudio());
@@ -101,6 +102,7 @@ public class AudioPlayerService extends Service {
             mediaPlayer = null;
         }
         prepareMediaPlayer(audioBook);
+        listener.onPlaybackEnded();
     }
 
 

@@ -1,12 +1,14 @@
 package de.ur.mi.android.demos.audio;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class AudioBookManager {
 
     private static AudioBookManager instance;
-    private ArrayList<AudioBook> audioBooks;
+    private final ArrayList<AudioBook> audioBooks;
 
     private AudioBookManager() {
         audioBooks = new ArrayList<>();
@@ -27,8 +29,19 @@ public class AudioBookManager {
         return audioBooks.get(position);
     }
 
+    public AudioBook getAudioBookForId(int id) {
+        for (AudioBook audioBook : audioBooks) {
+            if (audioBook.getId() == id) {
+                return audioBook;
+            }
+        }
+        return null;
+    }
+
     public AudioBook getNext(AudioBook audioBook) {
+        Log.d("manager", String.valueOf(audioBooks.size()));
         int index = audioBooks.indexOf(audioBook);
+        Log.d("manager", String.valueOf(index));
         if (index < 0 || index == audioBooks.size() - 1) return null;
         return audioBooks.get(index + 1);
     }

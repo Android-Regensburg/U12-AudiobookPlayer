@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -38,7 +39,7 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
     private ImageView imgWallpaper;
     private SeekBar seekBar;
     private TextView txtTitle,
-            txtDescription,
+            txtAuthor,
             txtCurrentTime,
             txtTotalDuration;
 
@@ -92,7 +93,7 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
     private void initUI() {
         setContentView(R.layout.activity_player);
         txtTitle = findViewById(R.id.txt_title);
-        txtDescription = findViewById(R.id.txt_description);
+        txtAuthor = findViewById(R.id.txt_author);
         txtTotalDuration = findViewById(R.id.txt_total_duration);
         txtCurrentTime = findViewById(R.id.txt_current_time);
         imgWallpaper = findViewById(R.id.img_wallpaper);
@@ -113,11 +114,13 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
         });
         btnPrevious.setOnClickListener(v -> {
             // TODO: Switch to Previous AudioBook
-            setAudioBook(manager.getNext(currentAudioBook));
+            Log.d("player_here", "TEST");
+            setAudioBook(manager.getPrevious(manager.getAudioBookForId(currentAudioBook.getId())));
         });
         btnNext.setOnClickListener(v -> {
             // TODO: Switch to Next Audiobook
-            setAudioBook(manager.getPrevious(currentAudioBook));
+            Log.d("player_there", "TEST");
+            setAudioBook(manager.getNext(manager.getAudioBookForId(currentAudioBook.getId())));
         });
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -142,10 +145,12 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
     }
 
     private void setAudioBook(AudioBook audioBook) {
+        Log.d("player_there", String.valueOf(audioBook));
         if (audioBook == null) return;
+        Log.d("PLAYER HERE", String.format("Now playing: %s", audioBook.getTitle()));
         currentAudioBook = audioBook;
         txtTitle.setText(audioBook.getTitle());
-        txtDescription.setText(audioBook.getDescription());
+        txtAuthor.setText(audioBook.getAuthor());
         txtCurrentTime.setText(TimeFormatter.formatSecondsToDurationString(0));
 
         Glide.with(this)
@@ -154,6 +159,10 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
                 .into(imgWallpaper);
 
         seekBar.setMax(audioBook.getDuration());
+
+        if (audioPlayerService != null) {
+            audioPlayerService.changeTitle(audioBook);
+        }
     }
 
     private void playAudio() {

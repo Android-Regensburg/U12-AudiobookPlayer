@@ -25,7 +25,7 @@ public class AudioBookViewHolder extends RecyclerView.ViewHolder {
 
     public void bindViews(final AudioBook audioBook, final Context context) {
         TextView txtTitle = itemView.findViewById(R.id.txt_title),
-                txtDescription = itemView.findViewById(R.id.txt_description),
+                txtDescription = itemView.findViewById(R.id.txt_author),
                 txtDuration = itemView.findViewById(R.id.txt_duration);
         ImageView imageView = itemView.findViewById(R.id.img_thumbnail);
         txtTitle.setText(audioBook.getTitle());
