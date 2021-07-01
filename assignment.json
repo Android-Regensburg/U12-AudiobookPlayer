@@ -1,0 +1,10 @@
+{
+  "title": "AudioBook-Player",
+  "abstract": "Das Ziel dieser Aufgabe ist die Implementierung einer App zum Abspielen von Hörbüchern.",
+  "hasStarterCode": true,
+  "hasSolutionCode": true,
+  "solutionComment": "Einfache Lösung mit gesamter Funktionalität innerhalb der Activity.",
+  "hasSimpleSolutionCode": false,
+  "hasAdvancedSolutionCode": false,
+  "solutionAvailableOn": "2021-07-08"
+}
