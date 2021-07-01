@@ -2,18 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="0dp"
-    android:padding="0dp">
-
-
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/img_wallpaper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,7 +29,6 @@
                 android:id="@+id/txt_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Audiobook Title"
                 android:textColor="@color/white"
                 android:textSize="36sp"
                 />
@@ -43,7 +37,6 @@
                 android:id="@+id/txt_author"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Audiobook Description"
                 android:textColor="@color/white"
                 android:textSize="18sp"/>
 
@@ -84,43 +77,34 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingHorizontal="10dp">
+            android:padding="5dp"
+            app:layout_constraintBottom_toTopOf="@id/seekbar_progess">
 
             <TextView
                 android:id="@+id/txt_current_time"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="00:00:00"/>
+                android:textColor="@color/white"/>
 
             <TextView
                 android:id="@+id/txt_total_duration"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="00:00:00"
                 android:textColor="@color/white"
                 android:textAlignment="textEnd"/>
 
         </LinearLayout>
 
-    </LinearLayout>
-
     <SeekBar
         android:id="@+id/seekbar_progess"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:thumb="@drawable/seekbar_style_thumb"
         android:progressDrawable="@drawable/seekbar_style_progess"
         android:layout_gravity="center"

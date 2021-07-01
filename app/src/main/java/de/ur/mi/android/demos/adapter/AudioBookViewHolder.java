@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import de.ur.mi.android.demos.R;
-import de.ur.mi.android.demos.audio.AudioBook;
+import de.ur.mi.android.demos.data.audiobook.AudioBook;
 import de.ur.mi.android.demos.utils.TimeFormatter;
 
 public class AudioBookViewHolder extends RecyclerView.ViewHolder {
@@ -25,11 +25,13 @@ public class AudioBookViewHolder extends RecyclerView.ViewHolder {
 
     public void bindViews(final AudioBook audioBook, final Context context) {
         TextView txtTitle = itemView.findViewById(R.id.txt_title),
-                txtDescription = itemView.findViewById(R.id.txt_author),
+                txtAuthor = itemView.findViewById(R.id.txt_author),
+                txtDescription = itemView.findViewById(R.id.txt_description),
                 txtDuration = itemView.findViewById(R.id.txt_duration);
         ImageView imageView = itemView.findViewById(R.id.img_thumbnail);
         txtTitle.setText(audioBook.getTitle());
-        txtDescription.setText(audioBook.getDescription());
+        txtAuthor.setText(audioBook.getAuthor());
+        txtDescription.setText(audioBook.getDescription().substring(0, 100) + "...");
         txtDuration.setText(TimeFormatter.formatSecondsToDurationString(audioBook.getDuration()));
         Glide.with(context)
                 .load(audioBook.getWallpaperURLString())

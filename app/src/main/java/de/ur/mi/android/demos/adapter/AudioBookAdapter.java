@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import de.ur.mi.android.demos.R;
-import de.ur.mi.android.demos.audio.AudioBook;
+import de.ur.mi.android.demos.data.audiobook.AudioBook;
 
 public class AudioBookAdapter extends RecyclerView.Adapter<AudioBookViewHolder> {
 

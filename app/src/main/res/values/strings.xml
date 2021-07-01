@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Audiobook</string>
+    <string name="title">Audiobook-Player</string>
 </resources>

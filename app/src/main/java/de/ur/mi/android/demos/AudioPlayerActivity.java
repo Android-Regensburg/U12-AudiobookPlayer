@@ -7,6 +7,8 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -19,12 +21,12 @@ import androidx.appcompat.content.res.AppCompatResources;
 
 import com.bumptech.glide.Glide;
 
-import de.ur.mi.android.demos.audio.AudioBook;
-import de.ur.mi.android.demos.audio.AudioBookManager;
+import de.ur.mi.android.demos.data.audiobook.AudioBook;
+import de.ur.mi.android.demos.data.AudioBookManager;
 import de.ur.mi.android.demos.service.AudioPlayerService;
 import de.ur.mi.android.demos.utils.TimeFormatter;
 
-public class AudioPlayerActivity extends AppCompatActivity implements AudioPlayerService.PlaybackListener {
+public class AudioPlayerActivity extends AppCompatActivity implements AudioPlayerService.AudioPlayerServiceListener {
 
     private AudioPlayerService audioPlayerService;
     private AudioBook currentAudioBook;
@@ -145,13 +147,13 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
     }
 
     private void setAudioBook(AudioBook audioBook) {
-        Log.d("player_there", String.valueOf(audioBook));
         if (audioBook == null) return;
-        Log.d("PLAYER HERE", String.format("Now playing: %s", audioBook.getTitle()));
         currentAudioBook = audioBook;
         txtTitle.setText(audioBook.getTitle());
         txtAuthor.setText(audioBook.getAuthor());
         txtCurrentTime.setText(TimeFormatter.formatSecondsToDurationString(0));
+        txtTotalDuration.setText(TimeFormatter.formatSecondsToDurationString(audioBook.getDuration()));
+        seekBar.setMax(audioBook.getDuration());
 
         Glide.with(this)
                 .load(audioBook.getWallpaperURLString())
@@ -163,6 +165,8 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
         if (audioPlayerService != null) {
             audioPlayerService.changeTitle(audioBook);
         }
+
+        startLoadingAnimation();
     }
 
     private void playAudio() {
@@ -178,11 +182,22 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
     }
 
     @Override
-    public void onPlaybackReady(int milliseconds) {
-        int durationInSeconds = milliseconds / 1000;
-        txtTotalDuration.setText(TimeFormatter.formatSecondsToDurationString(durationInSeconds));
-        seekBar.setMax(durationInSeconds);
+    public void onPlaybackReady() {
+        stopLoadingAnimation();
     }
+
+    private void startLoadingAnimation() {
+        Animation rotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
+        rotate.setRepeatMode(Animation.INFINITE);
+        btnPlay.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_loading));
+        btnPlay.startAnimation(rotate);
+    }
+
+    private void stopLoadingAnimation() {
+        btnPlay.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_play));
+        btnPlay.clearAnimation();
+    }
+
 
     @Override
     public void onPlaybackStarted() {

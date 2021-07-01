@@ -2,107 +2,96 @@ package de.ur.mi.android.demos.service;
 
 import android.app.Service;
 import android.content.Intent;
-import android.media.AudioAttributes;
-import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import de.ur.mi.android.demos.audio.AudioPlayer;
+import de.ur.mi.android.demos.data.audiobook.AudioBook;
 
-import de.ur.mi.android.demos.audio.AudioBook;
-
-public class AudioPlayerService extends Service {
+public class AudioPlayerService extends Service implements AudioPlayer.PlaybackListener {
 
     public static final String AUDIOBOOK_KEY = "audiobook";
-    private MediaPlayer mediaPlayer;
-    private PlaybackListener listener;
-    private ScheduledFuture scheduledFuture;
+    private AudioPlayer audioPlayer;
+    private AudioPlayerServiceListener listener;
 
     private final IBinder binder = new AudioPlayerBinder();
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
+        audioPlayer.release();
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        prepareMediaPlayer((AudioBook) intent.getSerializableExtra(AUDIOBOOK_KEY));
+        audioPlayer = new AudioPlayer(this);
+        audioPlayer.prepare((AudioBook) intent.getSerializableExtra(AUDIOBOOK_KEY));
         return binder;
     }
 
-    private void prepareMediaPlayer(AudioBook audioBook) {
-        if (audioBook == null) return;
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioAttributes(
-                new AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-        );
-        try {
-            mediaPlayer.setDataSource(audioBook.getAudioURLString());
-            mediaPlayer.prepareAsync();
-            mediaPlayer.setOnPreparedListener(this::handleIsPrepared);
-            mediaPlayer.setOnCompletionListener(mp -> listener.onPlaybackEnded());
-        } catch (IOException e) {
-            listener.onPlaybackError();
-            e.printStackTrace();
-        }
-    }
-
-    public void registerPlaybackListener(PlaybackListener listener) {
+    public void registerPlaybackListener(AudioPlayerServiceListener listener) {
         this.listener = listener;
     }
 
-    private void handleIsPrepared(MediaPlayer mp) {
-        this.mediaPlayer = mp;
-        listener.onPlaybackReady(mp.getDuration());
-    }
-
     public void playAudio() {
-        Log.d("myaudioplayservice", "Now Playing");
-        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
-            mediaPlayer.start();
-            listener.onPlaybackStarted();
-            scheduledFuture = Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->
-                    listener.onRemainingTimeUpdated(mediaPlayer.getCurrentPosition()), 0, 1000, TimeUnit.MILLISECONDS);
-        }
+        audioPlayer.play();
     }
 
     public void pauseAudio() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            scheduledFuture.cancel(true);
-            mediaPlayer.pause();
+        audioPlayer.pause();
+    }
+
+    public void seekAudio(int milliseconds) {
+        audioPlayer.seek(milliseconds);
+    }
+
+    public void changeTitle(AudioBook audioBook) {
+        audioPlayer.changeTitle(audioBook);
+    }
+
+    @Override
+    public void onPlaybackReady() {
+        if (listener != null) {
+            listener.onPlaybackReady();
+        }
+    }
+
+    @Override
+    public void onPlaybackStarted() {
+        if (listener != null) {
+            listener.onPlaybackStarted();
+        }
+    }
+
+    @Override
+    public void onPlaybackPaused() {
+        if (listener != null) {
             listener.onPlaybackPaused();
         }
     }
 
-    public void seekAudio(int milliseconds) {
-        if (mediaPlayer == null) return;
-        pauseAudio();
-        mediaPlayer.seekTo(milliseconds);
-        mediaPlayer.setOnSeekCompleteListener(mp -> playAudio());
+    @Override
+    public void onPlaybackEnded() {
+        if (listener != null) {
+            listener.onPlaybackEnded();
+        }
     }
 
-    public void changeTitle(AudioBook audioBook) {
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
+    @Override
+    public void onRemainingTimeUpdated(int milliseconds) {
+        if (listener != null) {
+            listener.onRemainingTimeUpdated(milliseconds);
         }
-        prepareMediaPlayer(audioBook);
-        listener.onPlaybackEnded();
+    }
+
+    @Override
+    public void onPlaybackError() {
+        if (listener != null) {
+            listener.onPlaybackError();
+        }
     }
 
 
@@ -112,8 +101,8 @@ public class AudioPlayerService extends Service {
         }
     }
 
-    public interface PlaybackListener {
-        void onPlaybackReady(int milliseconds);
+    public interface AudioPlayerServiceListener {
+        void onPlaybackReady();
         void onPlaybackStarted();
         void onPlaybackPaused();
         void onPlaybackEnded();
