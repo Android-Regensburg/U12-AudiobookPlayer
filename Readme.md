@@ -6,6 +6,8 @@ Das Ziel dieser Aufgabe ist die Implementierung einer App zum Abspielen von Hör
 
 **Hinweis**: Bei dieser Aufgabe handelt es sich um die letzte innerhalb des Kurses. Die Aufgabe ist entsprechend umfangreicher als bisherige und verwendet einige Bibliotheken, die wir im Laufe des Kurses kennen gelernt haben.
 
+**Hinweis2**: Die lizenzfreien Audioaufnahmen der gewählten Bücher stammen von der Seite [Librivox](https://librivox.org/). Es handelt sich nur um Ausschnitte aus den jeweiligen Werken.
+
 ### Vorgaben
 
 Das Layout für die Activities der Anwendung sind bereits vorgegeben. In der `MainActivity` befindet sich eine `RecyclerView` zur Auflistung der verfügbaren Hörbücher. Das Design für die einzelnen Items der Liste haben wir in der Datei `audiobook_item.xml` für Sie erstellt. Die Anbindung der `RecyclerView` einen passenden `CustomAdapter` müssen Sie selbst übernehmen. Eine dafür notwendige Repräsentation der Hörbücher finden Sie in der `AudioBook`-Klasse. Die Daten von fünf exemplarischen Hörbüchern stellen wir Ihnen über die URL `https://audiobook.software-engineering.education/audiobookdata.json` zur Verfügung - ein Zugriff darauf erfolgt wie in [U07-EM-Spielplan](https://android-regensburg.github.io/AssignmentViewer/index.html#Android-Regensburg/U07-EM-Spielplan) mit Hilfe des `Volley`-Frameworks. Diese Funktionalität ist bereits in einer `APIRequest`-Klasse implementiert - sie müssen lediglich die Antwort des Servers an die Methode `fromJSONString` der `AudioBook`-Klasse übergeben, um eine Liste selbiger zu erhalten. Die Strukturierung der Daten erfolgt innerhalb der Methode über die `GSON`-Library.
