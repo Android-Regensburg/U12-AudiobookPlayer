@@ -35,7 +35,12 @@ public class AudioBookAdapter extends RecyclerView.Adapter<AudioBookViewHolder> 
     @Override
     public AudioBookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.audiobook_item, parent, false);
-        return new AudioBookViewHolder(view, position -> listener.onItemClicked(dataList.get(position)));
+        return new AudioBookViewHolder(view, new AudioBookViewHolder.AudioBookViewHolderClickListener() {
+            @Override
+            public void onViewHolderClicked(int position) {
+                listener.onItemClicked(dataList.get(position));
+            }
+        });
     }
 
     @Override

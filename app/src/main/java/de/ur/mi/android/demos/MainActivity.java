@@ -31,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
         initAdapter();
     }
 
+    /**
+     * Erstellen der Instanz des AudioBookManagers. Da dieser als Singleton fungiert, hier kein direkter Konstruktoraufruf
+     * https://en.wikipedia.org/wiki/Singleton_pattern
+     */
     private void initManager() {
         manager = AudioBookManager.getInstance();
     }

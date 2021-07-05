@@ -23,6 +23,13 @@ public class AudioBookViewHolder extends RecyclerView.ViewHolder {
         this.listener = listener;
     }
 
+    /**
+     * In dieser Methode werden die UI-Elemente eines einzelnen Items innerhalb der RecyclerView
+     * anhand der Metadaten eines AudioBooks befüllt.
+     *
+     * @param audioBook: AudioBook an der aktuellen Position
+     * @param context: Der Context wird für die Glide-Library benötigt
+     */
     public void bindViews(final AudioBook audioBook, final Context context) {
         TextView txtTitle = itemView.findViewById(R.id.txt_title),
                 txtAuthor = itemView.findViewById(R.id.txt_author),
@@ -33,11 +40,24 @@ public class AudioBookViewHolder extends RecyclerView.ViewHolder {
         txtAuthor.setText(audioBook.getAuthor());
         txtDescription.setText(audioBook.getDescription().substring(0, 100) + "...");
         txtDuration.setText(TimeFormatter.formatSecondsToDurationString(audioBook.getDuration()));
+
+        /*
+            Die Glide-Library ermöglicht die Verwendung von externen Bildresourcen zur Befüllung von ImageViews in Android.
+         */
         Glide.with(context)
                 .load(audioBook.getWallpaperURLString())
                 .centerCrop()
                 .into(imageView);
-        itemView.setOnClickListener(v -> listener.onViewHolderClicked(getLayoutPosition()));
+
+        /*
+            Über diesen ClickListener wird die RecyclerView beim Click auf ein Item innerhalb der Liste informiert.
+         */
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onViewHolderClicked(getLayoutPosition());
+            }
+        });
     }
 
     public interface AudioBookViewHolderClickListener {

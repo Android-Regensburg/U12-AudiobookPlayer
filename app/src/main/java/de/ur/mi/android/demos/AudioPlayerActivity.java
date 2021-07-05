@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
@@ -28,16 +29,25 @@ import de.ur.mi.android.demos.utils.TimeFormatter;
 
 public class AudioPlayerActivity extends AppCompatActivity implements AudioPlayerService.AudioPlayerServiceListener {
 
+    /**
+     * Verweis auf den gebundenen Service, über den die Wiedergabe gesteuert wird.
+     */
     private AudioPlayerService audioPlayerService;
-    private AudioBook currentAudioBook;
-    private AudioBookManager manager;
     private boolean isBound = false;
+
+    /**
+     * Instanzvariablen zum Zugriff auf das AudioBookManager-Singleton und das aktuelle AudioBook.
+     */
+    private AudioBookManager manager;
+    private AudioBook currentAudioBook;
     private boolean isPlaying = false;
 
+    /**
+     * Instanzvariablen für UI-Elemente
+     */
     private ImageButton btnPlay,
             btnPrevious,
             btnNext;
-
     private ImageView imgWallpaper;
     private SeekBar seekBar;
     private TextView txtTitle,
@@ -45,6 +55,13 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
             txtCurrentTime,
             txtTotalDuration;
 
+
+    /**
+     * Diese Instanzvariable ist eine anonyme Klasse die vom ServiceConnection-Interface erbt.
+     * Die hier definierten Callback-Methoden werden aufgerufen, wenn der Service erfolgreich gebunden bzw. wieder getrennt wurde.
+     * Durch den IBinder kann über die getService-Methode auf die gebundene Instanz von AudioPlayerService zugegriffen werden
+     * und zur Steuerung der Wiedergabe in einer Instanzvariable abgelegt werden.
+     */
     private final ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -76,18 +93,28 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
     @Override
     protected void onStart() {
         super.onStart();
-        initService();
+        if (!isBound) {
+            initService();
+        }
     }
 
+    /**
+     * In dieser Methode wird das Binden des Service angestoßen. Sobald der Vorgang erfolgreich durchgeführt wurde,
+     * wird die onServiceConnected-Methode der ServiceConnection aufgerufen.
+     * Das abzuspielende AudioBook kann über einen Intent an den Service gegeben werden.
+     */
     private void initService() {
         Intent intent = new Intent(this, AudioPlayerService.class);
         intent.putExtra(AudioPlayerService.AUDIOBOOK_KEY, currentAudioBook);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
+    /**
+     * Der Service muss bei Beenden der App entbunden werden.
+     */
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         unbindService(connection);
         isBound = false;
     }
@@ -107,24 +134,32 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
     }
 
     private void setEventListeners() {
-        btnPlay.setOnClickListener(v -> {
-            if (isPlaying) {
-                stopAudio();
-            } else {
-                playAudio();
+        btnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPlaying) {
+                    stopAudio();
+                } else {
+                    playAudio();
+                }
             }
         });
-        btnPrevious.setOnClickListener(v -> {
-            // TODO: Switch to Previous AudioBook
-            Log.d("player_here", "TEST");
-            setAudioBook(manager.getPrevious(manager.getAudioBookForId(currentAudioBook.getId())));
+        btnPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAudioBook(manager.getPrevious(manager.getAudioBookForId(currentAudioBook.getId())));
+            }
         });
-        btnNext.setOnClickListener(v -> {
-            // TODO: Switch to Next Audiobook
-            Log.d("player_there", "TEST");
-            setAudioBook(manager.getNext(manager.getAudioBookForId(currentAudioBook.getId())));
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAudioBook(manager.getNext(manager.getAudioBookForId(currentAudioBook.getId())));
+            }
         });
 
+        /*
+            Der OnSeekBarChangeListener ermöglicht die Steuerung der Wiedergabeposition durch anfassen der SeekBar.
+         */
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -133,19 +168,22 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
                     seekBar.setProgress(progress);
                 }
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
     }
 
+    /**
+     * In dieser Methode werden die Meta-Daten eines übergebenen AudioBooks in die UI-Elemente eingetragen,
+     * sowie mit Hilfe des AudioPlayerService das abzuspielende AudioBook aktualisiert.
+     * Da dieses zunächst vorbereitet werden muss, wird eine Ladeanimation gestartet, bis die PlaybackReady-Methode aufgerufen wurde.
+     *
+     * @param audioBook: Das abzuspielende AudioBook
+     */
     private void setAudioBook(AudioBook audioBook) {
         if (audioBook == null) return;
         currentAudioBook = audioBook;
@@ -160,13 +198,17 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
                 .centerCrop()
                 .into(imgWallpaper);
 
-        seekBar.setMax(audioBook.getDuration());
-
         if (audioPlayerService != null) {
             audioPlayerService.changeTitle(audioBook);
+            startLoadingAnimation();
         }
+    }
 
-        startLoadingAnimation();
+    private void startLoadingAnimation() {
+        Animation rotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
+        rotate.setRepeatMode(Animation.INFINITE);
+        btnPlay.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_loading));
+        btnPlay.startAnimation(rotate);
     }
 
     private void playAudio() {
@@ -186,18 +228,10 @@ public class AudioPlayerActivity extends AppCompatActivity implements AudioPlaye
         stopLoadingAnimation();
     }
 
-    private void startLoadingAnimation() {
-        Animation rotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
-        rotate.setRepeatMode(Animation.INFINITE);
-        btnPlay.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_loading));
-        btnPlay.startAnimation(rotate);
-    }
-
     private void stopLoadingAnimation() {
         btnPlay.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_play));
         btnPlay.clearAnimation();
     }
-
 
     @Override
     public void onPlaybackStarted() {

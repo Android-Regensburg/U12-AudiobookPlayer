@@ -8,6 +8,9 @@ import java.util.ArrayList;
 
 public class AudioBook implements Serializable {
 
+    /**
+     * Eigenschaften eines Audiobooks. Diese sind konstant einer Instanz zugeordnet, daher als final deklariert.
+     */
     private final String id,
             title,
             description,
@@ -16,7 +19,8 @@ public class AudioBook implements Serializable {
             audioURLString;
     private final int duration;
 
-    public AudioBook(String id, String title,
+    public AudioBook(String id,
+                     String title,
                      String description,
                      String author,
                      String wallpaperURLString,
@@ -26,12 +30,19 @@ public class AudioBook implements Serializable {
         this.title = title;
         this.description = description;
         this.author = author;
-        this.wallpaperURLString =
-                wallpaperURLString;
+        this.wallpaperURLString = wallpaperURLString;
         this.audioURLString = audioURLString;
         this.duration = duration;
     }
 
+    /**
+     * In dieser Methode wird die Gson-Library genutzt, um auf einfache Art und Weise Instanzen einer Klasse aus einem JSONArray zu parsen.
+     * Das funktioniert hier deshalb mit lediglich 5 Zeilen Code, weil die Felder innerhalb des JSON genauso benannt sind, wie die Member der AudioBook-Klasse.
+     * Bei unterschiedlicher Benennung der Felder, kann mit einer "@SerializedName"-Annotation gearbeitet werden.
+     *
+     * @param jsonString: Daten der Response eines API Zugriffs, in diesem Fall ein JSONArray aus Audiobooks
+     * @return Eine ArrayList aus AudioBooks, die aus dem JSON geparsed wurden
+     */
     public static ArrayList<AudioBook> fromJSONString(String jsonString) {
         ArrayList<AudioBook> audioBooks = new ArrayList<>();
         JsonArray jsonArray = new Gson().fromJson(jsonString, JsonArray.class);
