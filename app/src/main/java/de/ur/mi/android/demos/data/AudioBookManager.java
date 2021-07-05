@@ -1,8 +1,6 @@
 package de.ur.mi.android.demos.data;
 
 import android.content.Context;
-import android.util.Log;
-
 import java.util.ArrayList;
 
 import de.ur.mi.android.demos.data.audiobook.AudioBook;

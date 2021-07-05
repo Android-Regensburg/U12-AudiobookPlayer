@@ -37,7 +37,7 @@ public class AudioPlayerService extends Service implements AudioPlayer.PlaybackL
      * Über den übergebenen Intent kann auf Extras zugegriffen werden, die die AudioPlayerActivity übergeben möchte.
      * In diesem Fall also das abzuspielende AudioBook.
      *
-     * @param intent
+     * @param intent: Intent mit dem der Service gestartet wurde. Über diesen kann auf Extras zugegriffen werden
      */
     @Nullable
     @Override

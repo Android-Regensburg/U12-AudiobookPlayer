@@ -4,13 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-
 import java.util.ArrayList;
-
 import de.ur.mi.android.demos.adapter.AudioBookAdapter;
 import de.ur.mi.android.demos.data.audiobook.AudioBook;
 import de.ur.mi.android.demos.data.AudioBookManager;
