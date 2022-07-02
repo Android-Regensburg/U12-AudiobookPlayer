@@ -2,7 +2,7 @@
 
 ## Aufgabe
 
-Das Ziel dieser Aufgabe ist die Implementierung einer App zum Abspielen von Hörbüchern. Dazu verwenden Sie die [MediaPlayer-Klasse](https://developer.android.com/reference/android/media/MediaPlayer) des Android-Frameworks, die unter anderem dazu genutzt werden kann, Audioquellen aus dem Internet zu streamen. Im Rahmen dieser Aufgabe wiederholen sie außerdem nochmal die Verwendung der Service-Funktionalität und RecyclerViews. Für letzteres werden Sie die [Glide-Library](https://github.com/bumptech/glide) verwenden, um `ImageViews` mit Bildern aus dem Internet zu befüllen.
+Das Ziel dieser Aufgabe ist die Implementierung einer App zum Abspielen von Hörbüchern. Dazu verwenden Sie die [*MediaPlayer*-Klasse](https://developer.android.com/reference/android/media/MediaPlayer) des Android-Frameworks, die unter anderem dazu genutzt werden kann, Audioquellen aus dem Internet zu streamen. Im Rahmen dieser Aufgabe wiederholen sie außerdem nochmal die Verwendung der [*Service*](https://developer.android.com/guide/components/services)-Funktionalität und *RecyclerViews*. Für letzteres werden Sie die [Glide-Library](https://github.com/bumptech/glide) verwenden, um `ImageViews` mit Bildern aus dem Internet zu befüllen.
 
 **Hinweis**: Bei dieser Aufgabe handelt es sich um die letzte innerhalb des Kurses. Die Aufgabe ist entsprechend umfangreicher als bisherige und verwendet einige Bibliotheken, die wir im Laufe des Kurses kennen gelernt haben.
 
@@ -10,7 +10,7 @@ Das Ziel dieser Aufgabe ist die Implementierung einer App zum Abspielen von Hör
 
 ### Vorgaben
 
-Das Layout für die Activities der Anwendung sind bereits vorgegeben. In der `MainActivity` befindet sich eine `RecyclerView` zur Auflistung der verfügbaren Hörbücher. Das Design für die einzelnen Items der Liste haben wir in der Datei `audiobook_item.xml` für Sie erstellt. Die Anbindung der `RecyclerView` einen passenden `CustomAdapter` müssen Sie selbst übernehmen. Eine dafür notwendige Repräsentation der Hörbücher finden Sie in der `AudioBook`-Klasse. Die Daten von fünf exemplarischen Hörbüchern stellen wir Ihnen über die URL `https://audiobook.software-engineering.education/audiobookdata.json` zur Verfügung - ein Zugriff darauf erfolgt wie in [U07-EM-Spielplan](https://android-regensburg.github.io/AssignmentViewer/index.html#Android-Regensburg/U07-EM-Spielplan) mit Hilfe des `Volley`-Frameworks. Diese Funktionalität ist bereits in einer `APIRequest`-Klasse implementiert - sie müssen lediglich die Antwort des Servers an die Methode `fromJSONString` der `AudioBook`-Klasse übergeben, um eine Liste selbiger zu erhalten. Die Strukturierung der Daten erfolgt innerhalb der Methode über die `GSON`-Library.
+Das Layout für die Activities der Anwendung sind bereits vorgegeben. In der `MainActivity` befindet sich eine `RecyclerView` zur Auflistung der verfügbaren Hörbücher. Das Design für die einzelnen Items der Liste haben wir in der Datei `audiobook_item.xml` für Sie erstellt. Die Anbindung der `RecyclerView` einen passenden `CustomAdapter` müssen Sie selbst übernehmen. Eine dafür notwendige Repräsentation der Hörbücher finden Sie in der `AudioBook`-Klasse. Die Daten von fünf exemplarischen Hörbüchern stellen wir Ihnen über die URL `https://audiobook.software-engineering.education/audiobookdata.json` zur Verfügung - ein Zugriff darauf erfolgt wie in [U07-MensaApp](https://android-regensburg.github.io/AssignmentViewer/index.html#Android-Regensburg/U07-MensaApp) mit Hilfe des `Volley`-Frameworks. Diese Funktionalität ist bereits in einer `APIRequest`-Klasse implementiert - sie müssen lediglich die Antwort des Servers an die Methode `fromJSONString` der `AudioBook`-Klasse übergeben, um eine Liste selbiger zu erhalten. Die Strukturierung der Daten erfolgt innerhalb der Methode über die `GSON`-Library.
 
 In der `AudioPlayerActivity` finden Sie Textfelder für die Meta-Informationen eines ausgewählten Hörbuchs. Außerdem sind dort Buttons zur Steuerung der Wiedergabe und eine `Seekbar` hinterlegt, mit der Sie den aktuellen Fortschritt beim Abspielen anzeigen, sowie später zu bestimmten Stellen eines Hörbuchs springen können sollen.
 
@@ -70,7 +70,9 @@ In der `AudioPlayerActivity` erstellen Sie nun eine Instanz des `AudioPlayers`. 
 
 #### Aktualisieren der SeekBar im Player
 
-Um den Stand der Seekbar im Player mit dem AudioBook abzugleichen, müssen Sie mehrere Schritte durchführen. Zum einen muss der Maximalwert, den die Seekbar annehmen kann, auf die Dauer AudioBooks gesetzt werden. Zum anderen müssen Sie, falls gerade ein AudioBook abgespielt wird, z.B. jede Sekunde die aktuelle Position abfragen. Dafür können Sie sich an der Lösung der [U06 | EggTimer: Die Eieruhr](https://android-regensburg.github.io/AssignmentViewer/index.html#Android-Regensburg/U06-Eieruhr) Aufgabe orientieren. (Tipp: `Executors`-Klasse, `mediaPlayer.getCurrentPosition()` jede Sekunde aufrufen). Sobald die Wiedergabe pausiert wird, müssen Sie das Zählen der Sekunden entsprechend stoppen.
+Um den Stand der Seekbar im Player mit dem AudioBook abzugleichen, müssen Sie mehrere Schritte durchführen. Zum einen muss der Maximalwert, den die Seekbar annehmen kann, auf die Dauer AudioBooks gesetzt werden. Zum anderen müssen Sie, falls gerade ein AudioBook abgespielt wird, z.B. jede Sekunde die aktuelle Position abfragen. Dafür können Sie sich an der Lösung der [U06 | Timer](https://android-regensburg.github.io/AssignmentViewer/index.html#Android-Regensburg/U06-Timer) Aufgabe orientieren. 
+
+(Tipp: `Executors`-Klasse, `mediaPlayer.getCurrentPosition()` jede Sekunde aufrufen). Sobald die Wiedergabe pausiert wird, müssen Sie das Zählen der Sekunden entsprechend stoppen.
 
 #### Anzeigen einer Ladeanimation während der MediaPlayer vorbereitet wird
 
