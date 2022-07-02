@@ -1,5 +1,6 @@
 package de.ur.mi.android.demos;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -26,7 +27,7 @@ import de.ur.mi.android.demos.data.AudioBookManager;
 import de.ur.mi.android.demos.service.AudioPlayerService;
 import de.ur.mi.android.demos.utils.TimeFormatter;
 
-public class AudioPlayerActivity extends AppCompatActivity implements AudioPlayerService.AudioPlayerServiceListener {
+public class AudioPlayerActivity extends Activity implements AudioPlayerService.AudioPlayerServiceListener {
 
     /**
      * Verweis auf den gebundenen Service, über den die Wiedergabe gesteuert wird.

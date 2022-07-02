@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ import de.ur.mi.android.demos.adapter.AudioBookAdapter;
 import de.ur.mi.android.demos.data.audiobook.AudioBook;
 import de.ur.mi.android.demos.data.AudioBookManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     public static final String AUDIOBOOK_EXTRA_KEY = "audiobook";
 
