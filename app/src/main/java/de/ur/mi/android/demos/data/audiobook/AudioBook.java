@@ -6,16 +6,23 @@ import com.google.gson.JsonArray;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Objekte dieser Klasse repräsentieren einzelene Hörbücher.
+ * In den Eigenschaften der Klasse werden die relevanten Informationen über die Hörbücher, so wie
+ * Links zur Audiodatei und zum Cover gespeichert.
+ * Über Getter-Methoden werden diese Eigenschaften nach außen verfügbargemacht.
+ */
 public class AudioBook implements Serializable {
 
-    private final String id,
-            title,
-            description,
-            author,
-            wallpaperURLString,
-            audioURLString;
-    private final int duration;
+    private final String id, // Eindeutige ID dieses Hörbuchs
+            title, // Titel des Hörbuchs
+            description, // Beschreibung des Hörbuchs
+            author, // Autor*in des (Hör-) Buchs
+            wallpaperURLString, // Link zum Cover
+            audioURLString; // Link zur Audiodatei
+    private final int duration; // Länge des Hörbuchs in Sekunden
 
+    // Über den Konstruktor werden die Eigenschaften des Hörbuchs gesetzt. Diese sind dann unveränderlich (Immutable).
     public AudioBook(String id, String title,
                      String description,
                      String author,
@@ -32,6 +39,14 @@ public class AudioBook implements Serializable {
         this.duration = duration;
     }
 
+
+    /**
+     * Mit Hilfe dieser statischen Methode kann aus einer JSON-formatierten Antwort der API eine
+     * Liste von AudioBook Objekten erzeugt werden, die dann zurückgegeben wird.
+     *
+     * @param jsonString JSON-formatierte Antwort der API
+     * @return Liste von AudioBook Objekten, die aus dem JSON String erzeugt wurden.
+     */
     public static ArrayList<AudioBook> fromJSONString(String jsonString) {
         ArrayList<AudioBook> audioBooks = new ArrayList<>();
         JsonArray jsonArray = new Gson().fromJson(jsonString, JsonArray.class);
@@ -40,6 +55,8 @@ public class AudioBook implements Serializable {
         });
         return audioBooks;
     }
+
+    // Getter Methoden:
 
     public String getId() {
         return id;

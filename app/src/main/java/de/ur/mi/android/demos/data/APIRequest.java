@@ -9,16 +9,33 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+/**
+ * Diese Klasse repräsentiert eine einzelne Anfrage an die API.
+ * Der Klasse kann im route Objekt eine URL übergeben werden. An diese wird dann eine GET-Anfrage gestellt,
+ * wenn die send-Methode aufgerufen wird. Sobald eine Antwort der API kommt wird der in send übergebene
+ * Listener vom Typ ResponseListener informiert.
+ */
 public class APIRequest {
 
     private final Route route;
     private final Context context;
 
+    /**
+     * Um eine API Anfrage zu erstellen ist ein Context und eine URL als Route Objekt erforderlich.
+     *
+     * @param route URL an welche die Anfrage gesendet werden soll.
+     * @param context Anwendungskontext.
+     */
     public APIRequest(Route route, Context context) {
         this.route = route;
         this.context = context;
     }
 
+    /**
+     * Diese Methode startet die API-Anfrage. Der übergebene Listener wird über das Ergebnis informiert.
+     *
+     * @param listener ResponseListener, der über die Antwort der API informiert werden solle.
+     */
     public void send(ResponseListener listener) {
         RequestQueue queue = Volley.newRequestQueue(context);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, this.route.url,
@@ -37,6 +54,9 @@ public class APIRequest {
         queue.add(stringRequest);
     }
 
+    /**
+     * Eine Route entspricht einer URL an die eine GET-Anfrage gesendet werden kann.
+     */
     public enum Route {
         AUDIOBOOK_DATA("https://audiobook.software-engineering.education/audiobookdata.json");
 
