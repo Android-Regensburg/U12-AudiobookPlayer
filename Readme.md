@@ -28,7 +28,7 @@ Implementieren Sie eine separate Klasse `AudioBookManager`. Hier soll mit Hilfe 
 
 Nachdem die Hörbücher jetzt über den `AudioBookManager` in der `MainActivity` zur Verfügung stehen, müssen diese im User-Interface angezeigt werden. Dafür soll die vorgebenene RecyclerView verwendet werden. Ergänzen Sie einen CustomAdapter `AudioBookAdapter`, der eine Liste von Hörbüchern erhält. Diese sollen einzeln durch eine weiteren Klasse `AudioBookViewHolder` dargestellt werden. Nutzen Sie dafür die `R.layout.audiobook_item`. Zusätzlich zu den Textfeldern, die Sie mit Metadaten zum Audiobook befüllen sollen, gibt es im Layout eine ImageView, die für das Thumbnail des Audiobooks vorgesehen ist. Dafür finden Sie in einem AudioBook die Instanzvariable `wallpaperURLString`. Verwenden Sie die `Glide`-Library, um das Bild aus der URL in die ImageView zu laden. Das funktioniert so:
 
-```
+```java
 Glide.with(context)
     .load(audioBook.getWallpaperURLString())
     .centerCrop()
@@ -49,7 +49,7 @@ Natürlich reicht es uns nicht, die Hörbücher nur aufgelistet zu sehen. Im nä
 
 Implementieren Sie eine Klasse `AudioPlayer`. Diese soll die Kommunikation mit der `MediaPlayer`-Klasse des Android Frameworks steuern. Zur Verwendung des MediaPlayers müssen Sie sich mit den möglichen Zuständen vertraut machen. Mit
 
-```
+```java
 mediaPlayer.setAudioAttributes(
     new AudioAttributes.Builder()
         .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
@@ -77,7 +77,7 @@ Um den Stand der Seekbar im Player mit dem AudioBook abzugleichen, müssen Sie m
 Damit der Zustand der App für Nutzer\*innen klar kommuniziert wird, empfiehlt es sich einen Ladeprozess entsprechend zu Kennzeichnen. Im Starterpaket sind dafür bereits alle notwendigen Resourcen hinterlegt.
 Sie können folgenden Code nutzen, um z.B. den Play-Button zu animieren:
 
-```
+```java
 private void startLoadingAnimation() {
         Animation rotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
         rotate.setRepeatMode(Animation.INFINITE);
