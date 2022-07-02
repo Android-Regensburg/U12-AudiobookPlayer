@@ -13,11 +13,18 @@ import de.ur.mi.android.demos.adapter.AudioBookAdapter;
 import de.ur.mi.android.demos.data.audiobook.AudioBook;
 import de.ur.mi.android.demos.data.AudioBookManager;
 
+/**
+ * Diese Activity ist der Einstiegspunkt in die Anwendung. Hier wird eine Liste der verfügbaren
+ * Hörbücher angezeigt, die dann selektiert und so in der DetailAnsicht geöffnet werden können.
+ */
 public class MainActivity extends Activity {
 
+    // Unter diesem Schlüssel wird das selektierte Hörbuch an die AudioPlayerActivity weitergegeben.
     public static final String AUDIOBOOK_EXTRA_KEY = "audiobook";
 
+    // Der AudioBookManager verwaltet die interne Repräsentation der Liste an Hörbüchern
     private AudioBookManager manager;
+    // Der AudioBookAdapter kümmert sich um die Darstellung der Liste der Hörbücher im UI.
     private AudioBookAdapter adapter;
     private RecyclerView recyclerAudioList;
 
@@ -44,6 +51,7 @@ public class MainActivity extends Activity {
         recyclerAudioList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
     }
 
+    // Der Adapter wird initialisiert und auf dem RecyclerView registriert. Dann wird die Liste an Büchern angefragt und dem Adapter übergeben.
     private void initAdapter() {
         adapter = new AudioBookAdapter(this, this::startPlayerActivity);
         recyclerAudioList.setAdapter(adapter);
@@ -55,6 +63,13 @@ public class MainActivity extends Activity {
         });
     }
 
+    /**
+     * Beim Klick auf ein Hörbuch wird die AudioPlayerAcitity gestartet.
+     * In dieser können Details eingesehen und die Wiedergabe gesteuert werden.
+     * Das selektierte Hörbuch wird dem Intent als Extra mitgegeben.
+     *
+     * @param audioBook das geklickte Hörbuch.
+     */
     private void startPlayerActivity(AudioBook audioBook) {
         Intent intent = new Intent(this, AudioPlayerActivity.class);
         intent.putExtra(AUDIOBOOK_EXTRA_KEY, audioBook);

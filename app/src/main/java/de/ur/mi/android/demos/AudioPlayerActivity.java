@@ -90,6 +90,7 @@ public class AudioPlayerActivity extends Activity implements AudioPlayerService.
         manager = AudioBookManager.getInstance();
     }
 
+    // Falls noch kein Hörbuch wieder gegeben wird, wird der Service zum Abspielen von Hörbüchern gestartet.
     @Override
     protected void onStart() {
         super.onStart();
@@ -133,6 +134,10 @@ public class AudioPlayerActivity extends Activity implements AudioPlayerService.
         seekBar.setPadding(0, 0, 0, 0);
     }
 
+    /**
+     * Diese Methode setzt die Eventlistener auf die Knöpfe und die Seekbar.
+     * So kann über diese die Wiedergabe gesteuert werden.
+     */
     private void setEventListeners() {
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,6 +209,10 @@ public class AudioPlayerActivity extends Activity implements AudioPlayerService.
         }
     }
 
+    /**
+     * Solange auf eine Antwort der API gewartet wird, soll eine Ladeanimation abgespielt werden.
+     * Diese wird mit dieser Methode gestartet.
+     */
     private void startLoadingAnimation() {
         Animation rotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
         rotate.setRepeatMode(Animation.INFINITE);

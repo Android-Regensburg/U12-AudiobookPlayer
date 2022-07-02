@@ -5,6 +5,8 @@ import java.util.Locale;
 public class TimeFormatter {
 
     /**
+     * Diese statische Methode wandelt eine Dauer in Sekunden in einen String mit dem Format "hh:mm:ss" um.
+     *
      * @param duration: Die Dauer eines Hörbuchs
      * @return String in Format "Stunden:Minuten:Sekunden" ausgehend von Dauer
      */

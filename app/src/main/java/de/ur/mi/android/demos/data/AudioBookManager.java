@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import de.ur.mi.android.demos.data.audiobook.AudioBook;
 
 /**
- * Der AudioBookManager soll eine Liste von AudioBooks verwalten und brauchbare Methode für diesen Kontext z.B. getNext bereitstellen.
+ * Der AudioBookManager soll eine Liste von AudioBooks verwalten und einfach zu verwendende Methode für diese (z.B. getNext) bereitstellen.
  * Zusätzlich wird hier der APIRequest gesteuert.
  *
  * Diese Klasse ist als Singleton angelegt, das heißt innerhalb einer Anwendung kann nur eine Instanz von ihr erzeugt werden.
@@ -48,6 +48,13 @@ public class AudioBookManager {
         return instance;
     }
 
+    /**
+     * Diese Methode gibt das Audiobook zurück, dessen ID der übergebenen ID entspricht. Wird kein
+     * passendes Hörbuch gefunden wird null zurückgegeben.
+     *
+     * @param id ID nach der gesucht werden soll.
+     * @return Hörbuch dessen ID der übergebenen entspricht oder null.
+     */
     public AudioBook getAudioBookForId(String id) {
         for (AudioBook audioBook : audioBooks) {
             if (audioBook.getId().equals(id)) {
@@ -77,6 +84,13 @@ public class AudioBookManager {
         return audioBooks.get(index - 1);
     }
 
+    /**
+     * Diese Methode startet das Laden der Bücher von der API und übergibt diese an den übergebenen
+     * Listener, sobald eine Antwort der API kommt.
+     *
+     * @param context Anwendungskontext
+     * @param listener Listener der über die Liste der Anfrage informiert werden soll.
+     */
     public void requestAudioBooks(Context context, AudioBookDataAvailableListener listener) {
         if (audioBooks.isEmpty()) {
             fetchAudioBookData(context, listener);
@@ -85,6 +99,7 @@ public class AudioBookManager {
         listener.onAudioBookDataAvailable(new ArrayList<>(audioBooks));
     }
 
+    // Starten der API Anfrage
     private void fetchAudioBookData(Context context, AudioBookDataAvailableListener listener) {
         APIRequest apiRequest = new APIRequest(APIRequest.Route.AUDIOBOOK_DATA, context);
         apiRequest.send(new APIRequest.ResponseListener() {

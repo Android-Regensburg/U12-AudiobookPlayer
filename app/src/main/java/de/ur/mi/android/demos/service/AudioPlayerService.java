@@ -12,10 +12,9 @@ import de.ur.mi.android.demos.data.audiobook.AudioBook;
 
 /**
  * Der AudioPlayerService dient dazu, dass die Wiedergabe forgesetzt werden kann, auch dann wenn die App selbst nicht im Vordergrund geöffnet ist.
- * In dieser Lösung wird ein gebundener Service verwendet.
+ * In dieser Lösung wird ein gebundener Service verwendet. Daher läuft der Service nur wenn die Anwendung noch läuft.
  */
 public class AudioPlayerService extends Service implements AudioPlayer.PlaybackListener {
-
 
     public static final String AUDIOBOOK_KEY = "audiobook";
     private AudioPlayer audioPlayer;

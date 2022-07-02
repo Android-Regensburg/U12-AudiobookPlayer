@@ -10,6 +10,10 @@ import java.util.concurrent.TimeUnit;
 
 import de.ur.mi.android.demos.data.audiobook.AudioBook;
 
+/**
+ * Der Audioplayer kapselt die Steuerung und Wiedergabe eines Hörbuchs nach außen und bietet einfach
+ * zu verwendende öffentliche Methoden dafür an.
+ */
 public class AudioPlayer {
 
     private final PlaybackListener listener;

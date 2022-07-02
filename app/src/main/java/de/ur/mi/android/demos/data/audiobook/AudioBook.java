@@ -6,6 +6,12 @@ import com.google.gson.JsonArray;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Objekte der AudioBook Klasse repräsentieren einzelne Hörbücher. Dabei werden wichtige Informationen
+ * und Links zur Audiodatei und zum Cover in Variablen gespeichert. Objekte sind nach der Erzeugung
+ * unveränderlich (Immutable). Auf die Eigenschaften kann über öffentliche Getter-Methoden
+ * zugegriffen werden.
+ */
 public class AudioBook implements Serializable {
 
     /**
@@ -51,6 +57,8 @@ public class AudioBook implements Serializable {
         });
         return audioBooks;
     }
+
+    // Nachfolgend Getter-Methoden.
 
     public String getId() {
         return id;
